@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -16,7 +17,11 @@ func main() {
 			http.Error(w, "can't read body", http.StatusBadRequest)
 			return
 		}
-		log.Printf("%s : %s\n", r.RequestURI, string(body))
+		if reqHeadersBytes, err := json.Marshal(r.Header); err != nil {
+			log.Printf("%s : %s\n\n", r.RequestURI, string(body))
+		} else {
+			log.Printf("%s : %s\n%s\n\n", r.RequestURI, string(body), string(reqHeadersBytes))
+		}
 		fmt.Fprintf(w, "ok")
 	})
 
