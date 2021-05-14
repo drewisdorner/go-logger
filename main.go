@@ -1,11 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/hokaccha/go-prettyjson"
 )
 
 func main() {
@@ -17,10 +18,10 @@ func main() {
 			http.Error(w, "can't read body", http.StatusBadRequest)
 			return
 		}
-		if reqHeadersBytes, err := json.MarshalIndent(r.Header, "", "  "); err != nil {
+		if prettyHeader, err := prettyjson.Marshal(r.Header); err != nil {
 			log.Printf("%s : %s\n\n", r.RequestURI, string(body))
 		} else {
-			log.Printf("%s : %s\n%s\n\n", r.RequestURI, string(body), string(reqHeadersBytes))
+			log.Printf("%s : %s\n%s\n\n", r.RequestURI, string(body), string(prettyHeader))
 		}
 		fmt.Fprintf(w, "ok")
 	})
